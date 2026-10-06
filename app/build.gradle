@@ -1,0 +1,19 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'ru.gnvp.gortrainer'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'ru.gnvp.gortrainer'
+        minSdk 24
+        targetSdk 35
+        versionCode 2
+        versionName '0.2-test'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
