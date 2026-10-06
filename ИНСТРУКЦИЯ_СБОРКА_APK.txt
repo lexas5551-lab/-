@@ -1,0 +1,20 @@
+ИНСТРУКЦИЯ: КАК ПОЛУЧИТЬ APK
+
+Вариант 1 — без Android Studio, через GitHub (рекомендуется)
+1. Создать новый репозиторий GitHub.
+2. Загрузить туда содержимое папки проекта.
+3. Открыть Actions → Build Android APK → Run workflow.
+4. Дождаться зелёной галочки.
+5. Скачать artifact GNVP-GOR-debug-apk.
+6. Из архива достать app-debug.apk и установить на телефон.
+
+Вариант 2 — Android Studio
+1. Установить Android Studio + SDK 35 + JDK 17.
+2. Open → выбрать папку GNVP_GOR_Android_Final.
+3. Дождаться Gradle Sync.
+4. Build → Build Bundle(s) / APK(s) → Build APK(s).
+5. APK будет: app/build/outputs/apk/debug/app-debug.apk.
+
+ПРИМЕЧАНИЕ
+В проекте нет разрешения на интернет. Приложение работает офлайн.
+Вопросы и ответы не перемешиваются внутри вопроса; перемешиваются только сами вопросы.
