@@ -70,11 +70,17 @@ public class StartupTest {
                 "(function(){Object.defineProperty(window,'localStorage',{configurable:true,get:function(){throw new Error('Storage unavailable')}});goHome();openPractice();startPractice();state.currentSelected=new Set(state.queue[0].correct);submitCurrent();return document.getElementById('feedback').innerText.indexOf('Верно.')>=0})()"));
             assertEquals("true", evaluate(instrumentation, view.get(),
                 "(function(){clearStats();goHome();return document.getElementById('app').innerText.indexOf('Подготовка')>=0})()"));
+            instrumentation.waitForIdleSync();
+            Thread.sleep(1000);
             Bitmap screenshot = instrumentation.getUiAutomation().takeScreenshot();
             assertNotNull(screenshot);
             File output = new File(instrumentation.getTargetContext().getExternalFilesDir(null), "startup.png");
             try (FileOutputStream stream = new FileOutputStream(output)) {
                 screenshot.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            }
+            try (android.os.ParcelFileDescriptor capture = instrumentation.getUiAutomation().executeShellCommand("screencap -p /sdcard/Download/startup.png");
+                 java.io.FileInputStream captureOutput = new java.io.FileInputStream(capture.getFileDescriptor())) {
+                while (captureOutput.read() != -1) { }
             }
         } finally {
             instrumentation.runOnMainSync(activity::finish);
