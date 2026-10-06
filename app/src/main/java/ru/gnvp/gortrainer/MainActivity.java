@@ -2,6 +2,8 @@ package ru.gnvp.gortrainer;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.graphics.Color;
+import android.widget.FrameLayout;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -20,7 +22,17 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         try {
             webView = new WebView(this);
-            setContentView(webView);
+            FrameLayout root = new FrameLayout(this);
+            root.setBackgroundColor(Color.rgb(18, 63, 98));
+            root.addView(webView, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+            root.setOnApplyWindowInsetsListener((view, insets) -> {
+                view.setPadding(insets.getSystemWindowInsetLeft(), insets.getSystemWindowInsetTop(),
+                    insets.getSystemWindowInsetRight(), insets.getSystemWindowInsetBottom());
+                return insets.consumeSystemWindowInsets();
+            });
+            setContentView(root);
+            root.requestApplyInsets();
             WebSettings settings = webView.getSettings();
             settings.setJavaScriptEnabled(true);
             settings.setDomStorageEnabled(true);
