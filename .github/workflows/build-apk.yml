@@ -32,10 +32,7 @@ jobs:
           target: google_apis
           script: |
             gradle connectedDebugAndroidTest
-            adb install -r app/build/outputs/apk/debug/app-debug.apk
-            adb shell am start -n ru.gnvp.gortrainer/.MainActivity
-            adb shell sleep 3
-            adb exec-out screencap -p > startup.png
+            adb pull /sdcard/Download/startup.png startup.png
       - name: Upload startup check
         uses: actions/upload-artifact@v4
         with:
