@@ -56,7 +56,7 @@ public class StartupTest {
             boolean ready = false;
             for (int i = 0; i < 60; i++) {
                 if ("true".equals(evaluate(instrumentation, view.get(),
-                        "window.__trainerReady === true && document.getElementById('app').innerText.indexOf('Подготовка к проверке знаний') >= 0"))) {
+                        "window.__trainerReady === true && document.getElementById('app').innerText.indexOf('Выберите режим') >= 0"))) {
                     ready = true;
                     break;
                 }
@@ -64,12 +64,38 @@ public class StartupTest {
             }
             assertTrue("Home screen was blank or failed to load", ready);
             assertEquals("145", evaluate(instrumentation, view.get(), "QUESTIONS.length"));
+            assertEquals("26", evaluate(instrumentation, view.get(), "QUESTIONS.filter(q=>q.image).length"));
             assertEquals("true", evaluate(instrumentation, view.get(),
-                "(function(){localStorage.setItem('trainerStatsV2','broken');goHome();return document.getElementById('app').innerText.indexOf('Подготовка')>=0})()"));
+                "(function(){openPractice();startPractice();toggleOption('B');submitCurrent();movePractice(1);movePractice(-1);return state.currentSelected.has('B') && document.getElementById('feedback').innerText.includes('Ответ неверный')})()"));
+            evaluate(instrumentation, view.get(), "location.reload()");
+            boolean reloaded = false;
+            for (int i = 0; i < 60; i++) {
+                if ("true".equals(evaluate(instrumentation, view.get(), "window.__trainerReady === true && document.querySelector('.mode-card') !== null"))) { reloaded = true; break; }
+                Thread.sleep(500);
+            }
+            assertTrue("Reload failed", reloaded);
             assertEquals("true", evaluate(instrumentation, view.get(),
-                "(function(){Object.defineProperty(window,'localStorage',{configurable:true,get:function(){throw new Error('Storage unavailable')}});goHome();openPractice();startPractice();state.currentSelected=new Set(state.queue[0].correct);submitCurrent();return document.getElementById('feedback').innerText.indexOf('Верно.')>=0})()"));
+                "(function(){continuePractice();return state.currentSelected.has('B') && document.getElementById('feedback').innerText.includes('Ответ неверный')})()"));
             assertEquals("true", evaluate(instrumentation, view.get(),
-                "(function(){clearStats();goHome();return document.getElementById('app').innerText.indexOf('Подготовка')>=0})()"));
+                "(function(){var prev=window.confirm;window.confirm=function(){return true};resetPracticeAnswers();window.confirm=prev;return Object.keys(loadPractice().answers).length===0 && stats().practiceWrong===1})()"));
+            evaluate(instrumentation, view.get(), "startPractice(['GNVP-70']);showCorrect()");
+            boolean imageReady = false;
+            for (int i = 0; i < 60; i++) {
+                if ("true".equals(evaluate(instrumentation, view.get(), "(function(){var img=document.querySelector('#visualSlot img');return !!img && img.complete && img.naturalWidth>0})()"))) { imageReady=true; break; }
+                Thread.sleep(500);
+            }
+            assertTrue("Ready illustration did not load", imageReady);
+            assertEquals("true", evaluate(instrumentation, view.get(),
+                "(function(){enlargeIllustration('GNVP-70');setIllustrationZoom(200);var dialog=document.getElementById('image-dialog');var ok=dialog.open && dialog.dataset.zoom==='200';dialog.close();return ok})()"));
+            assertEquals("true", evaluate(instrumentation, view.get(),
+                "(function(){goHome();return !Array.from(document.querySelectorAll('.mode-card')).some(b=>b.innerText.includes('Иллюстрации'))})()"));
+
+            assertEquals("true", evaluate(instrumentation, view.get(),
+                "(function(){localStorage.setItem('trainerStatsV2','broken');goHome();return document.getElementById('app').innerText.indexOf('Выберите режим')>=0})()"));
+            assertEquals("true", evaluate(instrumentation, view.get(),
+                "(function(){Object.defineProperty(window,'localStorage',{configurable:true,get:function(){throw new Error('Storage unavailable')}});goHome();openPractice();startPractice();state.currentSelected=new Set(state.queue[0].correct);submitCurrent();return document.getElementById('feedback').innerText.indexOf('Верно')>=0})()"));
+            assertEquals("true", evaluate(instrumentation, view.get(),
+                "(function(){clearStats();goHome();return document.getElementById('app').innerText.indexOf('Выберите режим')>=0})()"));
             instrumentation.waitForIdleSync();
             Thread.sleep(1000);
             Bitmap screenshot = instrumentation.getUiAutomation().takeScreenshot();

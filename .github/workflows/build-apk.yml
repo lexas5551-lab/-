@@ -18,7 +18,7 @@ jobs:
         with:
           gradle-version: '8.9'
       - name: Build debug APK
-        run: gradle assembleDebug assembleDebugAndroidTest
+        run: gradle assembleDebug assembleDebugAndroidTest assembleRelease
       - name: Enable emulator acceleration
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -45,3 +45,9 @@ jobs:
         with:
           name: GNVP-GOR-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Upload unsigned release for local signing
+        uses: actions/upload-artifact@v4
+        with:
+          name: GNVP-test-unsigned-release
+          path: app/build/outputs/apk/release/app-release-unsigned.apk

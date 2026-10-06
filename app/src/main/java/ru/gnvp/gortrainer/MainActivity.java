@@ -52,19 +52,19 @@ public class MainActivity extends Activity {
                 @Override
                 public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                     if (request.isForMainFrame()) {
-                        showStartupError("РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РіСЂСѓР·РёС‚СЊ РёРЅС‚РµСЂС„РµР№СЃ: " + error.getDescription());
+                        showStartupError("Не удалось загрузить интерфейс: " + error.getDescription());
                     }
                 }
             });
             webView.loadUrl("https://appassets.androidplatform.net/assets/index.html");
         } catch (RuntimeException error) {
-            showStartupError("РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РїСѓСЃС‚РёС‚СЊ Android System WebView: " + error.getMessage());
+            showStartupError("Не удалось запустить Android System WebView: " + error.getMessage());
         }
     }
 
     private void showStartupError(String message) {
         TextView text = new TextView(this);
-        text.setText("Р“РќР’Рџ Рё Р“РћР \n\n" + message + "\n\nРћР±РЅРѕРІРёС‚Рµ Android System WebView Рё РѕС‚РєСЂРѕР№С‚Рµ РїСЂРёР»РѕР¶РµРЅРёРµ СЃРЅРѕРІР°.");
+        text.setText("ГНВП-тест\n\n" + message + "\n\nОбновите Android System WebView и откройте приложение снова.");
         text.setTextSize(18);
         int padding = (int) (24 * getResources().getDisplayMetrics().density);
         text.setPadding(padding, padding, padding, padding);
